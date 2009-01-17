@@ -53,4 +53,22 @@ ActiveRecord::Schema.define(:version => 0) do
     t.column :deleter_name,   :string
     t.column :deleted_at,     :datetime
   end
+
+  create_table :helper_userstamps, :force => true do |t|
+    t.column :foo,            :integer
+    t.userstamps
+  end
+
+  create_table :helper_add_userstamps, :force => true do |t|
+    t.column :foo,            :integer
+  end
+
+  add_userstamps :helper_add_userstamps
+
+  create_table :helper_remove_userstamps, :force => true do |t|
+    t.column :foo,            :integer
+    t.userstamps
+  end
+
+  remove_userstamps :helper_remove_userstamps
 end
