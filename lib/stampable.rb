@@ -4,15 +4,15 @@ module Ddb #:nodoc:
     # By default this is set to false, so the plug-in will use columns named
     # <tt>creator_id</tt>, <tt>updater_id</tt>, and <tt>deleter_id</tt>.
     #
-    # To turn compatibility mode on, place the following line in your environment.rb
+    # To turn compatibility mode on, place the following line at the beginning of your environment.rb
     # file:
     #
-    #   Ddb::Userstamp.compatibility_mode = true
+    # DDB_USERSTAMP_COMPATIBILITY_MODE = true
     #
     # This will cause the plug-in to use columns named <tt>created_by</tt>,
     # <tt>updated_by</tt>, and <tt>deleted_by</tt>.
     mattr_accessor :compatibility_mode
-    @@compatibility_mode = false
+    @@compatibility_mode = defined?(DDB_USERSTAMP_COMPATIBILITY_MODE) && DDB_USERSTAMP_COMPATIBILITY_MODE
 
     # Extends the stamping functionality of ActiveRecord by automatically recording the model
     # responsible for creating, updating, and deleting the current object. See the Stamper
@@ -46,8 +46,6 @@ module Ddb #:nodoc:
           # Defaults to :deleter_id when compatibility mode is off
           # Defaults to :deleted_by when compatibility mode is on
           class_inheritable_accessor  :deleter_attribute
-
-          self.stampable
         end
       end
 
