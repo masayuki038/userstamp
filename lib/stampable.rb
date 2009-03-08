@@ -64,17 +64,18 @@ module Ddb #:nodoc:
         # The method will automatically setup all the associations, and create <tt>before_save</tt>
         # and <tt>before_create</tt> filters for doing the stamping.
         def stampable(options = {})
-          defaults  = {
-                        :stamper_class_name => :user,
-                        :creator_attribute  => Ddb::Userstamp.compatibility_mode ? :created_by : :creator_id,
-                        :updater_attribute  => Ddb::Userstamp.compatibility_mode ? :updated_by : :updater_id,
-                        :deleter_attribute  => Ddb::Userstamp.compatibility_mode ? :deleted_by : :deleter_id
-                      }.merge(options)
+          options.reverse_merge!(
+            :stamper_class_name => :user,
+            :before_validation => true,
+            :creator_attribute  => Ddb::Userstamp.compatibility_mode ? :created_by : :creator_id,
+            :updater_attribute  => Ddb::Userstamp.compatibility_mode ? :updated_by : :updater_id,
+            :deleter_attribute  => Ddb::Userstamp.compatibility_mode ? :deleted_by : :deleter_id
+          )
 
-          self.stamper_class_name = defaults[:stamper_class_name].to_sym
-          self.creator_attribute  = defaults[:creator_attribute].to_sym
-          self.updater_attribute  = defaults[:updater_attribute].to_sym
-          self.deleter_attribute  = defaults[:deleter_attribute].to_sym
+          self.stamper_class_name = options[:stamper_class_name].to_sym
+          self.creator_attribute  = options[:creator_attribute].to_sym
+          self.updater_attribute  = options[:updater_attribute].to_sym
+          self.deleter_attribute  = options[:deleter_attribute].to_sym
 
           class_eval do
             belongs_to :creator, :class_name => self.stamper_class_name.to_s.singularize.camelize,
@@ -82,9 +83,14 @@ module Ddb #:nodoc:
                                  
             belongs_to :updater, :class_name => self.stamper_class_name.to_s.singularize.camelize,
                                  :foreign_key => self.updater_attribute
-                                 
-            before_save     :set_updater_attribute
-            before_create   :set_creator_attribute
+            
+            if options[:before_validation]      
+              before_validation             :set_updater_attribute
+              before_validation_on_create   :set_creator_attribute
+            else
+              before_save     :set_updater_attribute
+              before_create   :set_creator_attribute
+            end
                                  
             if defined?(Caboose::Acts::Paranoid)
               belongs_to :deleter, :class_name => self.stamper_class_name.to_s.singularize.camelize,
