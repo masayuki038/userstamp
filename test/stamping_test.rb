@@ -6,7 +6,7 @@ require 'models/person'
 require 'models/post'
 require 'models/comment'
 
-class StampingTests < Test::Unit::TestCase  # :nodoc:
+class StampingTests < ActiveSupport::TestCase  # :nodoc:
   fixtures :users, :people, :posts, :comments
 
   def setup
