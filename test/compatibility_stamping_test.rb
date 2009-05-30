@@ -7,7 +7,7 @@ require 'models/person'
 require 'models/post'
 require 'models/comment'
 
-class CompatibilityStampingTests< Test::Unit::TestCase  # :nodoc:
+class CompatibilityStampingTests< ActiveSupport::TestCase  # :nodoc:
  fixtures :people, :comments 
 
   def setup

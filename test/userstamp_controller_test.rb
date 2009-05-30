@@ -1,19 +1,21 @@
-$:.unshift(File.dirname(__FILE__))
+$:.unshift(File.join(File.dirname(__FILE__), 'helpers'))
+$:.unshift(File.join(File.dirname(__FILE__), 'controllers'))
+$:.unshift(File.join(File.dirname(__FILE__), 'models'))
 
-require 'helpers/functional_test_helper'
-require 'controllers/userstamp_controller'
-require 'controllers/users_controller'
-require 'controllers/posts_controller'
-require 'models/user'
-require 'models/person'
-require 'models/post'
-require 'models/comment'
+require 'functional_test_helper'
+require 'userstamp_controller'
+require 'users_controller'
+require 'posts_controller'
+require 'user'
+require 'person'
+require 'post'
+require 'comment'
 
 ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:action/:id'
 end
 
-class PostsControllerTest < Test::Unit::TestCase
+class PostsControllerTest < ActiveSupport::TestCase
   fixtures :users, :people, :posts, :comments
 
   def setup
@@ -67,7 +69,7 @@ class PostsControllerTest < Test::Unit::TestCase
   end
 end
 
-class UsersControllerTest < Test::Unit::TestCase
+class UsersControllerTest < ActiveSupport::TestCase
   fixtures :users, :people, :posts, :comments
 
   def setup
